@@ -7,12 +7,14 @@ interface CustomerDashboardProps {
   setView: (view: string) => void;
   setSelectedProductType: (type: any) => void;
   loadCartDirectly: (item: any) => void;
+  t: (key: string) => string;
 }
 
 export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
   setView,
   setSelectedProductType,
-  loadCartDirectly
+  loadCartDirectly,
+  t
 }) => {
   const [activeTab, setActiveTab] = useState<'orders' | 'designs'>('orders');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -25,13 +27,13 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
 
   // Timeline definition
   const timelineSteps: { key: OrderStatus; label: string; icon: string }[] = [
-    { key: 'pending', label: 'Pending Review', icon: '📝' },
-    { key: 'in_design', label: 'In Design / Proofing', icon: '🎨' },
-    { key: 'approved', label: 'Approved', icon: '✓' },
-    { key: 'printing', label: 'Printing Release', icon: '🖨️' },
-    { key: 'packaging', label: 'Packaging', icon: '📦' },
-    { key: 'shipped', label: 'Shipped', icon: '🚚' },
-    { key: 'delivered', label: 'Delivered', icon: '🏠' }
+    { key: 'pending', label: t('navHome') === 'الرئيسية' ? 'قيد المراجعة' : 'Pending', icon: '📝' },
+    { key: 'in_design', label: t('navHome') === 'الرئيسية' ? 'تحت التعديل' : 'In Design', icon: '🎨' },
+    { key: 'approved', label: t('navHome') === 'الرئيسية' ? 'معتمد' : 'Approved', icon: '✓' },
+    { key: 'printing', label: t('navHome') === 'الرئيسية' ? 'جارٍ الطباعة' : 'Printing', icon: '🖨️' },
+    { key: 'packaging', label: t('navHome') === 'الرئيسية' ? 'التعبئة والتغليف' : 'Packaging', icon: '📦' },
+    { key: 'shipped', label: t('navHome') === 'الرئيسية' ? 'تم الشحن' : 'Shipped', icon: '🚚' },
+    { key: 'delivered', label: t('navHome') === 'الرئيسية' ? 'تم التسليم' : 'Delivered', icon: '🏠' }
   ];
 
   const getStepProgressIndex = (status: OrderStatus) => {
@@ -40,15 +42,14 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
 
   const handleApproveProof = (orderId: string) => {
     db.updateOrderStatus(orderId, 'approved');
-    // Refresh active order info modal
     const updated = db.getOrders('user-current').find(o => o.id === orderId)!;
     setSelectedOrder(updated);
-    alert('Mock proof approved successfully! The order is now queued for print release.');
+    alert(t('proofApprovedSuccess'));
   };
 
   const handleRequestRevision = (orderId: string) => {
     if (!revisionFeedback.trim()) {
-      alert('Please explain what revisions you require (colors, size, fonts).');
+      alert(t('explainRevisionPlaceholder'));
       return;
     }
     db.updateOrderStatus(orderId, 'in_design', `Customer feedback: "${revisionFeedback}"`);
@@ -56,7 +57,7 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
     setSelectedOrder(updated);
     setRevisionFeedback('');
     setShowRevisionInput(false);
-    alert('Your revision request has been saved and sent back to the design team.');
+    alert(t('revisionSubmittedSuccess'));
   };
 
   const triggerReorder = (order: Order) => {
@@ -77,14 +78,13 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
 
   const loadSavedDesignToEditor = (design: SavedDesign) => {
     setSelectedProductType(design.productType);
-    // In a fully-linked app, we can write design state directly to active state. We'll let App.tsx handle loading this!
     localStorage.setItem('show_arsta_active_editor_load', JSON.stringify(design.canvasState));
     setView('studio');
   };
 
   const deleteSavedDesign = (id: string) => {
     db.deleteDesign(id);
-    alert('Design deleted successfully.');
+    alert(t('navHome') === 'الرئيسية' ? 'تم حذف التصميم بنجاح.' : 'Design deleted successfully.');
   };
 
   return (
@@ -92,27 +92,27 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
       {/* SIDEBAR */}
       <div className="dashboard-sidebar">
         <div style={{ padding: '0 16px 20px', borderBottom: '1px solid var(--border-color)', marginBottom: '20px' }}>
-          <h3 className="serif-font" style={{ fontSize: '1.2rem' }}>My Account</h3>
+          <h3 className="serif-font" style={{ fontSize: '1.2rem' }}>{t('navDashboard')}</h3>
           <span style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>alex@designstudio.io</span>
         </div>
         <div 
           onClick={() => setActiveTab('orders')}
           className={`dashboard-link ${activeTab === 'orders' ? 'active' : ''}`}
         >
-          <span>🛒</span> Order History
+          <span>🛒</span> {t('orderHistory')}
         </div>
         <div 
           onClick={() => setActiveTab('designs')}
           className={`dashboard-link ${activeTab === 'designs' ? 'active' : ''}`}
         >
-          <span>🎨</span> Saved Custom Designs
+          <span>🎨</span> {t('savedDesigns')}
         </div>
         <div 
           onClick={() => setView('services')}
           className="dashboard-link"
           style={{ marginTop: '20px', color: 'var(--color-secondary)' }}
         >
-          <span>＋</span> New Printing Job
+          <span>＋</span> {t('navHome') === 'الرئيسية' ? 'طلب طباعة جديد' : 'New Print Job'}
         </div>
       </div>
 
@@ -121,21 +121,21 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
         {activeTab === 'orders' ? (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
-              <h2 className="serif-font" style={{ fontSize: '2.2rem' }}>Order History</h2>
-              <span className="badge badge-approved">2 Orders Placed</span>
+              <h2 className="serif-font" style={{ fontSize: '2.2rem' }}>{t('orderHistory')}</h2>
+              <span className="badge badge-approved">{orders.length} {t('cartCount') !== '0' ? t('navHome') === 'الرئيسية' ? 'طلبات نشطة' : 'Active Orders' : ''}</span>
             </div>
 
             <div className="custom-table-container">
               <table className="custom-table">
                 <thead>
                   <tr>
-                    <th>Order Ref</th>
-                    <th>Date Placed</th>
-                    <th>Product Item</th>
-                    <th>Qty Config</th>
-                    <th>Final Cost</th>
-                    <th>Production Status</th>
-                    <th>Action</th>
+                    <th>{t('orderRef')}</th>
+                    <th>{t('datePlaced')}</th>
+                    <th>{t('productItem')}</th>
+                    <th>{t('qtyConfig')}</th>
+                    <th>{t('finalCost')}</th>
+                    <th>{t('productionStatus')}</th>
+                    <th>{t('actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -158,14 +158,14 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
                             style={{ padding: '6px 12px', fontSize: '0.8rem' }}
                             onClick={() => setSelectedOrder(order)}
                           >
-                            Details
+                            {t('detailsAction')}
                           </button>
                           <button 
                             className="btn btn-primary" 
                             style={{ padding: '6px 12px', fontSize: '0.8rem', background: 'var(--color-secondary)', color: '#000' }}
                             onClick={() => triggerReorder(order)}
                           >
-                            Reorder
+                            {t('reorder')}
                           </button>
                         </div>
                       </td>
@@ -178,14 +178,14 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
         ) : (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
-              <h2 className="serif-font" style={{ fontSize: '2.2rem' }}>Saved Canvas Designs</h2>
-              <span className="badge badge-indesign">{savedDesigns.length} saved</span>
+              <h2 className="serif-font" style={{ fontSize: '2.2rem' }}>{t('savedDesigns')}</h2>
+              <span className="badge badge-indesign">{savedDesigns.length} {t('navHome') === 'الرئيسية' ? 'محفوظة' : 'saved'}</span>
             </div>
 
             {savedDesigns.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '60px', border: '1px dashed var(--border-color)', borderRadius: '12px' }}>
-                <p style={{ color: 'var(--color-text-secondary)', marginBottom: '24px' }}>You haven't saved any canvas templates yet.</p>
-                <button className="btn btn-primary" onClick={() => setView('studio')}>Open Studio Editor</button>
+                <p style={{ color: 'var(--color-text-secondary)', marginBottom: '24px' }}>{t('noSavedDesigns')}</p>
+                <button className="btn btn-primary" onClick={() => setView('studio')}>{t('openStudio')}</button>
               </div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
@@ -198,7 +198,7 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
                       </div>
                       <h4 className="serif-font" style={{ fontSize: '1.25rem', marginBottom: '8px' }}>{design.name}</h4>
                       <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
-                        Custom canvas layout containing {design.canvasState.elements.length} components.
+                        {t('navHome') === 'الرئيسية' ? `يحتوي القالب على ${design.canvasState.elements.length} عناصر.` : `Custom canvas layout containing ${design.canvasState.elements.length} components.`}
                       </p>
                     </div>
 
@@ -208,7 +208,7 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
                         style={{ flex: 1, padding: '8px', fontSize: '0.8rem' }}
                         onClick={() => loadSavedDesignToEditor(design)}
                       >
-                        Edit in Studio
+                        {t('openStudio')}
                       </button>
                       <button 
                         className="btn btn-danger" 
@@ -245,8 +245,8 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
               display: 'flex', justifyContent: 'space-between', alignItems: 'center'
             }}>
               <div>
-                <span className="badge badge-printing" style={{ marginBottom: '4px' }}>Order Detail Invoice</span>
-                <h3 className="serif-font" style={{ fontSize: '1.8rem' }}>Order #{selectedOrder.id}</h3>
+                <span className="badge badge-printing" style={{ marginBottom: '4px' }}>{t('detailsAction')}</span>
+                <h3 className="serif-font" style={{ fontSize: '1.8rem' }}>{t('orderRef')} #{selectedOrder.id}</h3>
               </div>
               <button 
                 className="btn btn-secondary" 
@@ -266,7 +266,7 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
               {/* TIMELINE PROGRESS SYSTEM */}
               <div style={{ marginBottom: '40px' }}>
                 <h4 style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '20px' }}>
-                  Live Production Tracking
+                  {t('timelineTitle')}
                 </h4>
                 
                 <div className="timeline">
@@ -303,34 +303,34 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
                 {/* Product Specifications */}
                 <div>
                   <h4 style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px' }}>
-                    Selected Specifications
+                    {t('specificationsTitle')}
                   </h4>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.9rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: 'var(--color-text-secondary)' }}>Product:</span>
+                      <span style={{ color: 'var(--color-text-secondary)' }}>{t('productItem')}:</span>
                       <strong>{selectedOrder.productName}</strong>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: 'var(--color-text-secondary)' }}>Quantity Volume:</span>
-                      <strong>{selectedOrder.quantity} units</strong>
+                      <span style={{ color: 'var(--color-text-secondary)' }}>{t('qtyConfig')}:</span>
+                      <strong>{selectedOrder.quantity}</strong>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: 'var(--color-text-secondary)' }}>Finishing Trim:</span>
+                      <span style={{ color: 'var(--color-text-secondary)' }}>{t('finish')}:</span>
                       <strong>{selectedOrder.finish}</strong>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: 'var(--color-text-secondary)' }}>Material Grade:</span>
+                      <span style={{ color: 'var(--color-text-secondary)' }}>{t('material')}:</span>
                       <strong>{selectedOrder.material}</strong>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: 'var(--color-text-secondary)' }}>Chassis Color:</span>
+                      <span style={{ color: 'var(--color-text-secondary)' }}>{t('color')}</span>
                       <strong style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <span style={{ width: '12px', height: '12px', borderRadius: '50%', background: selectedOrder.color, border: '1px solid #777' }} />
                         {selectedOrder.color}
                       </strong>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-color)', paddingTop: '10px', marginTop: '10px' }}>
-                      <span style={{ fontWeight: 700 }}>Paid Cost:</span>
+                      <span style={{ fontWeight: 700 }}>{t('finalCost')}:</span>
                       <strong style={{ color: 'var(--color-secondary)', fontSize: '1.25rem' }}>${selectedOrder.price.toLocaleString()}</strong>
                     </div>
                   </div>
@@ -339,27 +339,25 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
                 {/* Designer Proofing Segment */}
                 <div style={{ background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-color)', borderRadius: '12px', padding: '24px' }}>
                   <h4 style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>
-                    Preflight Proofing & Revision
+                    {t('proofingTitle')}
                   </h4>
 
                   {selectedOrder.status === 'pending' && (
                     <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>
-                      <p style={{ color: 'var(--color-secondary)', marginBottom: '10px' }}>🕒 File Verification Queue</p>
-                      Our prepress technicians are testing your vector paths, coordinates, bleed boundaries, and resolution ratings. We will release a high-fidelity proof layout for your approval within 24 hours.
+                      {t('proofingDescQueue')}
                     </div>
                   )}
 
                   {selectedOrder.status === 'in_design' && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                      <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
-                        <p style={{ color: 'var(--color-primary)', fontWeight: 600, marginBottom: '8px' }}>🎨 Proof Uploaded by Designer</p>
-                        A designer has revised your specifications. Please review this outline. Once you approve, printing begins immediately.
+                      <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', lineHeight: '1.6' }}>
+                        {t('proofingDescProof')}
                       </div>
                       
                       {/* Revision Logs */}
                       {selectedOrder.revisions && selectedOrder.revisions.length > 0 && (
                         <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '10px', borderRadius: '6px', fontSize: '0.75rem' }}>
-                          <strong>Revision History Logs:</strong>
+                          <strong>{t('revisionHistoryTitle')}</strong>
                           <ul style={{ paddingLeft: '16px', marginTop: '4px', color: 'var(--color-text-muted)' }}>
                             {selectedOrder.revisions.map((rev, i) => <li key={i}>{rev}</li>)}
                           </ul>
@@ -369,10 +367,10 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
                       {!showRevisionInput ? (
                         <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
                           <button className="btn btn-primary" style={{ flex: 1, padding: '8px 12px', fontSize: '0.8rem' }} onClick={() => handleApproveProof(selectedOrder.id)}>
-                            Approve Proof
+                            {t('approveProofBtn')}
                           </button>
                           <button className="btn btn-secondary" style={{ flex: 1, padding: '8px 12px', fontSize: '0.8rem' }} onClick={() => setShowRevisionInput(true)}>
-                            Request Revision
+                            {t('requestRevisionBtn')}
                           </button>
                         </div>
                       ) : (
@@ -381,7 +379,7 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
                             rows={2}
                             value={revisionFeedback}
                             onChange={(e) => setRevisionFeedback(e.target.value)}
-                            placeholder="Explain required adjustments (e.g. Center logo larger, change text color)..."
+                            placeholder={t('explainRevisionPlaceholder')}
                             style={{
                               background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-color)',
                               color: '#FFF', padding: '8px', borderRadius: '6px', fontSize: '0.8rem', resize: 'vertical'
@@ -389,10 +387,10 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
                           />
                           <div style={{ display: 'flex', gap: '8px' }}>
                             <button className="btn btn-primary" style={{ flex: 1, padding: '6px', fontSize: '0.8rem' }} onClick={() => handleRequestRevision(selectedOrder.id)}>
-                              Submit Feeback
+                              {t('submitFeedback')}
                             </button>
                             <button className="btn btn-secondary" style={{ padding: '6px', fontSize: '0.8rem' }} onClick={() => setShowRevisionInput(false)}>
-                              Cancel
+                              {t('cancel')}
                             </button>
                           </div>
                         </div>
@@ -402,8 +400,7 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
 
                   {selectedOrder.status !== 'pending' && selectedOrder.status !== 'in_design' && (
                     <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>
-                      <p style={{ color: '#30D158', marginBottom: '8px' }}>✓ Blueprint Released to Printing</p>
-                      This file setup has been approved by the customer and released for printing. No further design adjustments can be requested.
+                      {t('printReleaseSuccess')}
                     </div>
                   )}
                 </div>

@@ -7,16 +7,18 @@ interface RequestDesignProps {
   setView: (view: string) => void;
   activeRole: string;
   setRole: (role: any) => void;
+  t: (key: string) => string;
 }
 
 export const RequestDesign: React.FC<RequestDesignProps> = ({
   setView,
   activeRole,
-  setRole
+  setRole,
+  t
 }) => {
   const [productType, setProductType] = useState<ProductType>('tshirt');
   const [description, setDescription] = useState<string>('');
-  const [budgetRange, setBudgetRange] = useState<string>('$500 - $1,000 (Standard Brand Pack)');
+  const [budgetRange, setBudgetRange] = useState<string>('$500 - $1,000');
   const [urgency, setUrgency] = useState<'standard' | 'rush' | 'express'>('standard');
   const [refImage, setRefImage] = useState<string | null>(null);
   const [refImageName, setRefImageName] = useState<string | null>(null);
@@ -38,7 +40,7 @@ export const RequestDesign: React.FC<RequestDesignProps> = ({
     e.preventDefault();
 
     if (!description.trim()) {
-      alert('Please describe your design idea to help our creative team.');
+      alert(t('explainRevisionPlaceholder'));
       return;
     }
 
@@ -69,9 +71,9 @@ export const RequestDesign: React.FC<RequestDesignProps> = ({
       <div className="section" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
         <div className="glass-panel" style={{ padding: '48px', maxWidth: '500px', textAlign: 'center' }}>
           <div style={{ fontSize: '3.5rem', color: 'var(--color-secondary)', marginBottom: '24px' }}>✦</div>
-          <h2 className="serif-font" style={{ fontSize: '2rem', marginBottom: '16px' }}>Brief Submitted</h2>
-          <p style={{ color: 'var(--color-text-secondary)', marginBottom: '32px', fontSize: '0.95rem' }}>
-            Your design brief has been securely transmitted to our administrative studio. A professional lead designer will review it and upload a mockup proof within 24 hours.
+          <h2 className="serif-font" style={{ fontSize: '2rem', marginBottom: '16px' }}>{t('briefSubmitted')}</h2>
+          <p style={{ color: 'var(--color-text-secondary)', marginBottom: '32px', fontSize: '0.95rem', lineHeight: '1.8' }}>
+            {t('briefSubmittedDesc')}
           </p>
           <div style={{ display: 'flex', gap: '16px' }}>
             <button 
@@ -85,7 +87,7 @@ export const RequestDesign: React.FC<RequestDesignProps> = ({
                 setView('customer-dashboard');
               }}
             >
-              Track on Dashboard
+              {t('trackDashboard')}
             </button>
             <button 
               className="btn btn-secondary"
@@ -97,7 +99,7 @@ export const RequestDesign: React.FC<RequestDesignProps> = ({
                 setView('home');
               }}
             >
-              Go to Home
+              {t('backHome')}
             </button>
           </div>
         </div>
@@ -109,12 +111,12 @@ export const RequestDesign: React.FC<RequestDesignProps> = ({
     <div className="section" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '60px', alignItems: 'start' }}>
       {/* Description column */}
       <div style={{ padding: '20px 0' }}>
-        <span className="badge badge-indesign" style={{ marginBottom: '16px' }}>Professional Design Service</span>
+        <span className="badge badge-indesign" style={{ marginBottom: '16px' }}>{t('navRequestDesign')}</span>
         <h1 className="serif-font" style={{ fontSize: '3rem', marginBottom: '24px', lineHeight: 1.1 }}>
-          Let Our Designers Craft Your Print Asset
+          {t('requestDesignTitle')}
         </h1>
         <p style={{ color: 'var(--color-text-secondary)', fontSize: '1.1rem', marginBottom: '32px' }}>
-          Don't have print-ready artwork? Work directly with our design agency team. We design, review, and print under one roof.
+          {t('requestDesignDesc')}
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -124,9 +126,9 @@ export const RequestDesign: React.FC<RequestDesignProps> = ({
               display: 'flex', alignItems: 'center', justifySelf: 'center', justifyContent: 'center', color: 'var(--color-secondary)', fontWeight: 'bold'
             }}>1</div>
             <div>
-              <h4 style={{ marginBottom: '4px' }}>Detailed Briefing Intake</h4>
+              <h4 style={{ marginBottom: '4px' }}>{t('detailedBrief')}</h4>
               <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>
-                Outline your ideas, branding references, colors, font guides, and timeline preferences in the brief form.
+                {t('detailedBriefDesc')}
               </p>
             </div>
           </div>
@@ -137,9 +139,9 @@ export const RequestDesign: React.FC<RequestDesignProps> = ({
               display: 'flex', alignItems: 'center', justifySelf: 'center', justifyContent: 'center', color: 'var(--color-secondary)', fontWeight: 'bold'
             }}>2</div>
             <div>
-              <h4 style={{ marginBottom: '4px' }}>Mockup Collaboration</h4>
+              <h4 style={{ marginBottom: '4px' }}>{t('mockupCollab')}</h4>
               <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>
-                Your assigned designer uploads proof concepts directly to your account. You can request revisions or approve them instantly.
+                {t('mockupCollabDesc')}
               </p>
             </div>
           </div>
@@ -150,9 +152,9 @@ export const RequestDesign: React.FC<RequestDesignProps> = ({
               display: 'flex', alignItems: 'center', justifySelf: 'center', justifyContent: 'center', color: 'var(--color-secondary)', fontWeight: 'bold'
             }}>3</div>
             <div>
-              <h4 style={{ marginBottom: '4px' }}>Production Blueprint Release</h4>
+              <h4 style={{ marginBottom: '4px' }}>{t('blueprintRelease')}</h4>
               <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>
-                Once approved, the file coordinates are sent to our printing queue. You track production steps through packaging and courier shipment.
+                {t('blueprintReleaseDesc')}
               </p>
             </div>
           </div>
@@ -162,12 +164,12 @@ export const RequestDesign: React.FC<RequestDesignProps> = ({
       {/* Interactive Form column */}
       <form onSubmit={handleSubmit} className="glass-panel" style={{ padding: '40px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
         <h3 className="serif-font" style={{ fontSize: '1.6rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '16px' }}>
-          Create Design Brief
+          {t('createBriefTitle')}
         </h3>
 
         {/* Product Type selection */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>Product Category</label>
+          <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>{t('productCategory')}</label>
           <select 
             value={productType}
             onChange={(e) => setProductType(e.target.value as ProductType)}
@@ -189,12 +191,12 @@ export const RequestDesign: React.FC<RequestDesignProps> = ({
 
         {/* Description brief textarea */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>Describe Your Idea</label>
+          <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>{t('describeIdea')}</label>
           <textarea 
             rows={4}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Please detail your color desires, text components, logos, and general layout expectations..."
+            placeholder={t('describeIdeaPlaceholder')}
             style={{
               background: 'var(--bg-surface-elevated)',
               border: '1px solid var(--border-color)',
@@ -211,7 +213,7 @@ export const RequestDesign: React.FC<RequestDesignProps> = ({
 
         {/* Upload Reference Simulation */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>Reference Images / Logos</label>
+          <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>{t('referenceImages')}</label>
           <div>
             <input 
               type="file" 
@@ -236,14 +238,14 @@ export const RequestDesign: React.FC<RequestDesignProps> = ({
                 textAlign: 'center'
               }}
             >
-              {refImageName ? `✓ ${refImageName}` : 'Upload sketches, logos, details (Max 10MB)'}
+              {refImageName ? `✓ ${refImageName}` : t('refUploadPlaceholder')}
             </label>
           </div>
         </div>
 
         {/* Budget select */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>Target Budget Range</label>
+          <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>{t('targetBudget')}</label>
           <select 
             value={budgetRange}
             onChange={(e) => setBudgetRange(e.target.value)}
@@ -257,16 +259,16 @@ export const RequestDesign: React.FC<RequestDesignProps> = ({
               cursor: 'pointer'
             }}
           >
-            <option value="$100 - $300 (Single item concept)">$100 - $300 (Single item concept)</option>
-            <option value="$300 - $500 (Detailed logo and print placement)">$300 - $500 (Detailed logo and print placement)</option>
-            <option value="$500 - $1,000 (Standard Brand Pack)">$500 - $1,000 (Standard Brand Pack)</option>
-            <option value="$1,000+ (Full corporate collateral kit)">$1,000+ (Full corporate collateral kit)</option>
+            <option value="$100 - $300">$100 - $300</option>
+            <option value="$300 - $500">$300 - $500</option>
+            <option value="$500 - $1,000">$500 - $1,000</option>
+            <option value="$1,000+">$1,000+</option>
           </select>
         </div>
 
         {/* Urgency select */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>Delivery Urgency</label>
+          <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>{t('deliveryUrgency')}</label>
           <div style={{ display: 'flex', gap: '10px' }}>
             {['standard', 'rush', 'express'].map((urg) => (
               <button
@@ -287,7 +289,7 @@ export const RequestDesign: React.FC<RequestDesignProps> = ({
                   letterSpacing: '0.05em'
                 }}
               >
-                {urg === 'standard' ? 'Standard (5-7d)' : (urg === 'rush' ? '⚡ Rush (2-3d)' : '✦ Express (24h)')}
+                {urg === 'standard' ? t('urgencyStandard') : (urg === 'rush' ? t('urgencyRush') : t('urgencyExpress'))}
               </button>
             ))}
           </div>
@@ -295,7 +297,7 @@ export const RequestDesign: React.FC<RequestDesignProps> = ({
 
         {/* Submit triggers */}
         <button type="submit" className="btn btn-primary" style={{ marginTop: '12px' }}>
-          Submit Brief to Agency
+          {t('submitBrief')}
         </button>
       </form>
     </div>

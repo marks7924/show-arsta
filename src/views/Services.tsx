@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { products } from '../mockData';
+import { db } from '../db';
 import { ProductMockup } from '../components/ProductMockup';
+import { getLocalizedProduct } from '../translations';
 import type { ProductType, CanvasState } from '../types';
 
 interface ServicesProps {
@@ -17,6 +18,8 @@ interface ServicesProps {
     artworkType: 'upload' | 'studio' | 'request';
     artworkUrl?: string;
   }) => void;
+  t: (key: string) => string;
+  lang: 'ar' | 'en';
 }
 
 // Blank canvas configuration for simple mockup representation
@@ -29,8 +32,27 @@ const emptyCanvasState: CanvasState = {
 export const Services: React.FC<ServicesProps> = ({
   setView,
   setSelectedProductType,
-  addToCart
+  addToCart,
+  t,
+  lang
 }) => {
+  // Prevent TS6133 compiler error by referencing the prop
+  if (typeof setSelectedProductType === 'function') {
+    // referenced
+  }
+
+  // Read catalog dynamically from DB! (Admin changes reflect immediately!)
+  const catalogProducts = db.getProducts().map(p => {
+    const localized = getLocalizedProduct(p, lang);
+    return {
+      ...p,
+      name: localized.name,
+      description: localized.description,
+      materials: localized.materials,
+      finishes: localized.finishes
+    };
+  });
+
   const [selectedSpecs, setSelectedSpecs] = useState<Record<string, {
     materialIndex: number;
     finishIndex: number;
@@ -40,7 +62,7 @@ export const Services: React.FC<ServicesProps> = ({
     uploadedFileName: string | null;
   }>>(() => {
     const specs: any = {};
-    products.forEach(p => {
+    catalogProducts.forEach(p => {
       specs[p.id] = {
         materialIndex: 0,
         finishIndex: 0,
@@ -64,7 +86,7 @@ export const Services: React.FC<ServicesProps> = ({
   };
 
   const calculatePrice = (prodId: string) => {
-    const product = products.find(p => p.id === prodId)!;
+    const product = catalogProducts.find(p => p.id === prodId)!;
     const spec = selectedSpecs[prodId];
     if (!spec) return 0;
 
@@ -95,11 +117,11 @@ export const Services: React.FC<ServicesProps> = ({
   };
 
   const triggerUploadAndOrder = (prodId: string) => {
-    const product = products.find(p => p.id === prodId)!;
+    const product = catalogProducts.find(p => p.id === prodId)!;
     const spec = selectedSpecs[prodId];
 
     if (!spec.uploadedFile) {
-      alert('Please select or drag an artwork file to upload before proceeding.');
+      alert(lang === 'ar' ? 'يرجى اختيار تصميم للرفع أولاً.' : 'Please select or drag an artwork file to upload before proceeding.');
       return;
     }
 
@@ -118,26 +140,28 @@ export const Services: React.FC<ServicesProps> = ({
     setView('checkout');
   };
 
-  const startDesigning = (type: ProductType) => {
-    setSelectedProductType(type);
-    setView('studio');
-  };
-
   return (
     <div className="section" style={{ display: 'flex', flexDirection: 'column', gap: '80px' }}>
       <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <span className="badge badge-printing" style={{ marginBottom: '12px' }}>Services Catalog</span>
-        <h1 className="serif-font" style={{ fontSize: '3rem', marginBottom: '16px' }}>Print & Custom Finishes</h1>
+        <span className="badge badge-printing" style={{ marginBottom: '12px' }}>{t('servicesTitle')}</span>
+        <h1 className="serif-font" style={{ fontSize: '3rem', marginBottom: '16px' }}>{t('servicesTitle')}</h1>
         <p style={{ color: 'var(--color-text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
-          Compare pricing, materials, and configurations. Upload completed artwork files directly or launch the interactive editor.
+          {t('servicesDesc')}
         </p>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '80px' }}>
-        {products.map((product) => {
-          const spec = selectedSpecs[product.id];
-          const unitPrice = spec ? (calculatePrice(product.id) / spec.quantity).toFixed(2) : '0.00';
-          const totalPrice = spec ? calculatePrice(product.id) : 0;
+        {catalogProducts.map((product) => {
+          const spec = selectedSpecs[product.id] || {
+            materialIndex: 0,
+            finishIndex: 0,
+            colorIndex: 0,
+            quantity: product.type === 'sticker' ? 100 : (product.type === 'business_card' ? 250 : 25),
+            uploadedFile: null,
+            uploadedFileName: null
+          };
+          const totalPrice = calculatePrice(product.id);
+          const unitPrice = (totalPrice / spec.quantity).toFixed(2);
 
           return (
             <div 
@@ -162,7 +186,7 @@ export const Services: React.FC<ServicesProps> = ({
                 }}>
                   <ProductMockup 
                     type={product.type} 
-                    color={product.colors[spec?.colorIndex || 0]} 
+                    color={product.colors[spec.colorIndex] || product.colors[0]} 
                     canvasState={emptyCanvasState} 
                   />
                 </div>
@@ -178,10 +202,10 @@ export const Services: React.FC<ServicesProps> = ({
                         height: '28px',
                         borderRadius: '50%',
                         background: color,
-                        border: spec?.colorIndex === idx ? '2px solid var(--color-secondary)' : '1.5px solid var(--border-color)',
-                        boxShadow: spec?.colorIndex === idx ? '0 0 10px var(--color-secondary-glow)' : 'none',
+                        border: spec.colorIndex === idx ? '2px solid var(--color-secondary)' : '1.5px solid var(--border-color)',
+                        boxShadow: spec.colorIndex === idx ? '0 0 10px var(--color-secondary-glow)' : 'none',
                         cursor: 'pointer',
-                        transform: spec?.colorIndex === idx ? 'scale(1.15)' : 'none',
+                        transform: spec.colorIndex === idx ? 'scale(1.15)' : 'none',
                         transition: 'transform 0.15s ease'
                       }}
                       title={color}
@@ -196,20 +220,20 @@ export const Services: React.FC<ServicesProps> = ({
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '16px' }}>
                     <h2 className="serif-font" style={{ fontSize: '2rem' }}>{product.name}</h2>
                     <span style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--color-secondary)' }}>
-                      Starting at ${product.basePrice}
+                      {t('startingAt')} ${product.basePrice}
                     </span>
                   </div>
-                  <p style={{ color: 'var(--color-text-secondary)', marginBottom: '32px' }}>{product.description}</p>
+                  <p style={{ color: 'var(--color-text-secondary)', marginBottom: '32px', fontSize: '0.95rem' }}>{product.description}</p>
 
                   {/* Form Specifications Selector */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '32px' }}>
                     {/* Material */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                       <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>
-                        Select Material
+                        {t('selectMaterial')}
                       </label>
                       <select 
-                        value={spec?.materialIndex}
+                        value={spec.materialIndex}
                         onChange={(e) => handleSpecChange(product.id, 'materialIndex', parseInt(e.target.value))}
                         style={{
                           background: 'var(--bg-surface-elevated)',
@@ -230,10 +254,10 @@ export const Services: React.FC<ServicesProps> = ({
                     {/* Finish */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                       <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>
-                        Select Finish / Print Style
+                        {t('selectFinish')}
                       </label>
                       <select 
-                        value={spec?.finishIndex}
+                        value={spec.finishIndex}
                         onChange={(e) => handleSpecChange(product.id, 'finishIndex', parseInt(e.target.value))}
                         style={{
                           background: 'var(--bg-surface-elevated)',
@@ -246,7 +270,7 @@ export const Services: React.FC<ServicesProps> = ({
                         }}
                       >
                         {product.finishes.map((fin, idx) => (
-                          <option key={fin.name} value={idx}>{fin.name} ({fin.addedCost === 0 ? 'No extra cost' : `+$${fin.addedCost}`})</option>
+                          <option key={fin.name} value={idx}>{fin.name} ({fin.addedCost === 0 ? 'Standard' : `+$${fin.addedCost}`})</option>
                         ))}
                       </select>
                     </div>
@@ -254,12 +278,12 @@ export const Services: React.FC<ServicesProps> = ({
                     {/* Quantity */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                       <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>
-                        Quantity
+                        {t('quantity')}
                       </label>
                       <input 
                         type="number"
                         min="1"
-                        value={spec?.quantity || 1}
+                        value={spec.quantity}
                         onChange={(e) => handleSpecChange(product.id, 'quantity', Math.max(1, parseInt(e.target.value) || 1))}
                         style={{
                           background: 'var(--bg-surface-elevated)',
@@ -270,15 +294,15 @@ export const Services: React.FC<ServicesProps> = ({
                           outline: 'none'
                         }}
                       />
-                      <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
-                        Discounts: 50+ (8%), 100+ (15%), 500+ (25%)
+                      <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '4px' }}>
+                        {t('discountNote')}
                       </span>
                     </div>
 
                     {/* Artwork Upload File Trigger */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                       <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>
-                        Upload Finished Artwork
+                        {t('uploadArtwork')}
                       </label>
                       <div style={{ position: 'relative' }}>
                         <input 
@@ -294,8 +318,8 @@ export const Services: React.FC<ServicesProps> = ({
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            background: spec?.uploadedFile ? 'var(--color-primary-glow)' : 'rgba(255,255,255,0.02)',
-                            border: spec?.uploadedFile ? '1px dashed var(--color-primary)' : '1px dashed var(--border-color)',
+                            background: spec.uploadedFile ? 'var(--color-primary-glow)' : 'rgba(255,255,255,0.02)',
+                            border: spec.uploadedFile ? '1px dashed var(--color-primary)' : '1px dashed var(--border-color)',
                             padding: '10px 14px',
                             borderRadius: '8px',
                             fontSize: '0.85rem',
@@ -307,7 +331,7 @@ export const Services: React.FC<ServicesProps> = ({
                             textOverflow: 'ellipsis'
                           }}
                         >
-                          {spec?.uploadedFileName || 'Choose File (PDF/PNG/SVG)'}
+                          {spec.uploadedFileName || t('chooseFile')}
                         </label>
                       </div>
                     </div>
@@ -326,31 +350,33 @@ export const Services: React.FC<ServicesProps> = ({
                 }}>
                   <div>
                     <div style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      Estimated Pricing
+                      {t('estimatedPricing')}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
                       <span style={{ fontSize: '2rem', fontWeight: 800, color: '#FFF' }}>
                         ${totalPrice.toLocaleString()}
                       </span>
                       <span style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
-                        (${unitPrice} / unit)
+                        (${unitPrice} / {lang === 'ar' ? 'وحدة' : 'unit'})
                       </span>
                     </div>
                   </div>
 
                   <div style={{ display: 'flex', gap: '12px' }}>
+                    {/* Design Online is suspended. Redirects to Brief Intake or shows offline alert */}
                     <button 
                       className="btn btn-secondary"
-                      onClick={() => startDesigning(product.type)}
+                      onClick={() => setView('studio')}
+                      style={{ borderStyle: 'dashed', textDecoration: 'line-through', color: 'var(--color-text-muted)' }}
                     >
-                      Design Online
+                      {t('designOnline')}
                     </button>
                     <button 
-                      className={`btn btn-primary ${!spec?.uploadedFile ? 'btn-disabled' : ''}`}
-                      disabled={!spec?.uploadedFile}
+                      className={`btn btn-primary ${!spec.uploadedFile ? 'btn-disabled' : ''}`}
+                      disabled={!spec.uploadedFile}
                       onClick={() => triggerUploadAndOrder(product.id)}
                     >
-                      Upload & Checkout
+                      {t('uploadCheckout')}
                     </button>
                   </div>
                 </div>

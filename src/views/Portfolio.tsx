@@ -6,9 +6,10 @@ import type { PortfolioProject } from '../types';
 interface PortfolioProps {
   setView: (view: string) => void;
   activeRole: string;
+  t: (key: string) => string;
 }
 
-export const Portfolio: React.FC<PortfolioProps> = ({ setView, activeRole }) => {
+export const Portfolio: React.FC<PortfolioProps> = ({ setView, activeRole, t }) => {
   const projects = db.getPortfolioProjects();
 
   // Helper to render customized SVG drafts (Before)
@@ -279,7 +280,7 @@ export const Portfolio: React.FC<PortfolioProps> = ({ setView, activeRole }) => 
           textTransform: 'uppercase',
           letterSpacing: '0.05em'
         }}>
-          Simulated Physical Outcome
+          {t('outcomeSimulation')}
         </div>
       </div>
     );
@@ -288,10 +289,10 @@ export const Portfolio: React.FC<PortfolioProps> = ({ setView, activeRole }) => 
   return (
     <div className="section" style={{ display: 'flex', flexDirection: 'column', gap: '60px' }}>
       <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <span className="badge badge-indesign" style={{ marginBottom: '12px' }}>Agency Work</span>
-        <h1 className="serif-font" style={{ fontSize: '3rem', marginBottom: '16px' }}>Creative Portfolio</h1>
+        <span className="badge badge-indesign" style={{ marginBottom: '12px' }}>{t('navPortfolio')}</span>
+        <h1 className="serif-font" style={{ fontSize: '3rem', marginBottom: '16px' }}>{t('portfolioTitle')}</h1>
         <p style={{ color: 'var(--color-text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
-          Explore Case Studies from real clients, evaluating the flow from their primary draft ideas to production printing runs.
+          {t('portfolioDesc')}
         </p>
       </div>
 
@@ -312,22 +313,22 @@ export const Portfolio: React.FC<PortfolioProps> = ({ setView, activeRole }) => 
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
                 <span className="badge badge-approved">{project.category}</span>
-                <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Client: {project.client}</span>
+                <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>{t('clientNameLabel')}: {project.client}</span>
               </div>
               <h2 className="serif-font" style={{ fontSize: '2.5rem', marginBottom: '24px', lineHeight: 1.1 }}>{project.title}</h2>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
                 <div>
                   <h4 style={{ color: 'var(--color-secondary)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
-                    01 // Client Brief & Objectives
+                    {t('clientBrief')}
                   </h4>
-                  <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.95rem' }}>{project.brief}</p>
+                  <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.95rem', lineHeight: '1.8' }}>{project.brief}</p>
                 </div>
                 <div>
                   <h4 style={{ color: 'var(--color-secondary)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
-                    02 // Design Development Process
+                    {t('designProcess')}
                   </h4>
-                  <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.95rem' }}>{project.process}</p>
+                  <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.95rem', lineHeight: '1.8' }}>{project.process}</p>
                 </div>
               </div>
 
@@ -336,7 +337,7 @@ export const Portfolio: React.FC<PortfolioProps> = ({ setView, activeRole }) => 
                   className="btn btn-primary"
                   onClick={() => setView('services')}
                 >
-                  Order Similar Print Services
+                  {t('orderSimilar')}
                 </button>
               </div>
             </div>
@@ -346,6 +347,8 @@ export const Portfolio: React.FC<PortfolioProps> = ({ setView, activeRole }) => 
               {/* Slider widget */}
               <div>
                 <BeforeAfterSlider 
+                  titleBefore={t('navHome') === 'الرئيسية' ? 'مسودة فكرة العميل' : 'Client Brief Sketch'}
+                  titleAfter={t('navHome') === 'الرئيسية' ? 'نموذج مطبوع حقيقي فاخر' : 'Production-Ready Mockup'}
                   beforeNode={renderBeforeDraft(project.beforeImage)} 
                   afterNode={renderAfterMockup(project.afterImage)}
                 />
@@ -360,12 +363,12 @@ export const Portfolio: React.FC<PortfolioProps> = ({ setView, activeRole }) => 
       
       {activeRole === 'admin' && (
         <div className="glass-panel" style={{ padding: '30px', textAlign: 'center' }}>
-          <h4 style={{ marginBottom: '12px' }}>Admin Mode Active</h4>
+          <h4 style={{ marginBottom: '12px' }}>{t('navAdmin')}</h4>
           <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem', marginBottom: '20px' }}>
-            You can upload a new project case study directly to this list from the Administrator Dashboard.
+            {t('navHome') === 'الرئيسية' ? 'يمكنك نشر دراسة حالة مشروع جديد مباشرة من لوحة التحكم.' : 'You can upload a new project case study directly to this list from the Administrator Dashboard.'}
           </p>
           <button className="btn btn-secondary" onClick={() => setView('admin-dashboard')}>
-            Go to Admin Panel
+            {t('navAdmin')}
           </button>
         </div>
       )}

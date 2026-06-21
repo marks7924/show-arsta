@@ -7,6 +7,9 @@ interface HeaderProps {
   activeRole: UserRole;
   setRole: (role: UserRole) => void;
   cartCount: number;
+  lang: 'ar' | 'en';
+  toggleLanguage: () => void;
+  t: (key: string) => string;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -14,7 +17,10 @@ export const Header: React.FC<HeaderProps> = ({
   setView,
   activeRole,
   setRole,
-  cartCount
+  cartCount,
+  lang,
+  toggleLanguage,
+  t
 }) => {
   return (
     <header className="glass-panel" style={{
@@ -67,7 +73,7 @@ export const Header: React.FC<HeaderProps> = ({
             transition: 'var(--transition-fast)'
           }}
         >
-          Home
+          {t('navHome')}
         </span>
         <span 
           onClick={() => setView('services')} 
@@ -79,7 +85,7 @@ export const Header: React.FC<HeaderProps> = ({
             transition: 'var(--transition-fast)'
           }}
         >
-          Services
+          {t('navServices')}
         </span>
         <span 
           onClick={() => setView('portfolio')} 
@@ -91,7 +97,7 @@ export const Header: React.FC<HeaderProps> = ({
             transition: 'var(--transition-fast)'
           }}
         >
-          Portfolio
+          {t('navPortfolio')}
         </span>
         <span 
           onClick={() => setView('request-design')} 
@@ -103,23 +109,27 @@ export const Header: React.FC<HeaderProps> = ({
             transition: 'var(--transition-fast)'
           }}
         >
-          Request Design
+          {t('navRequestDesign')}
         </span>
+        
+        {/* Studio Editor (Offline Warning Badge) */}
         <span 
           onClick={() => setView('studio')} 
           style={{ 
             cursor: 'pointer', 
             fontWeight: 600, 
             fontSize: '0.95rem',
-            color: currentView === 'studio' ? 'var(--color-secondary)' : 'var(--color-text-secondary)',
+            color: 'var(--color-text-muted)',
             transition: 'var(--transition-fast)',
-            border: '1px solid rgba(0, 255, 204, 0.3)',
+            border: '1px dashed rgba(255, 45, 85, 0.3)',
             padding: '4px 10px',
             borderRadius: '50px',
-            background: currentView === 'studio' ? 'var(--color-secondary-glow)' : 'transparent'
+            background: 'rgba(255, 45, 85, 0.05)',
+            textDecoration: 'line-through'
           }}
+          title={lang === 'ar' ? 'معطل مؤقتاً للصيانة' : 'Temporarily suspended'}
         >
-          Studio Editor
+          {t('navStudio')} {lang === 'ar' ? '(معطل)' : '(Offline)'}
         </span>
 
         {activeRole !== 'guest' && (
@@ -133,16 +143,34 @@ export const Header: React.FC<HeaderProps> = ({
               transition: 'var(--transition-fast)'
             }}
           >
-            {activeRole === 'admin' ? 'Admin Panel' : 'My Dashboard'}
+            {activeRole === 'admin' ? t('navAdmin') : t('navDashboard')}
           </span>
         )}
       </nav>
 
-      {/* Role Switcher & Cart */}
+      {/* Role Switcher & Language */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        {/* Quick Language Toggle Link in Header */}
+        <span 
+          onClick={toggleLanguage}
+          style={{
+            cursor: 'pointer',
+            fontSize: '0.85rem',
+            fontWeight: 700,
+            color: 'var(--color-secondary)',
+            textTransform: 'uppercase',
+            borderRight: lang === 'ar' ? '1px solid var(--border-color)' : 'none',
+            borderLeft: lang === 'en' ? '1px solid var(--border-color)' : 'none',
+            paddingRight: lang === 'ar' ? '12px' : '0',
+            paddingLeft: lang === 'en' ? '12px' : '0',
+          }}
+        >
+          {lang === 'ar' ? 'EN' : 'عربي'}
+        </span>
+
         {/* Role Selector dropdown */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem' }}>
-          <span style={{ color: 'var(--color-text-muted)', fontWeight: 500 }}>Preview Mode:</span>
+          <span style={{ color: 'var(--color-text-muted)', fontWeight: 500 }}>{t('previewMode')}</span>
           <select 
             value={activeRole} 
             onChange={(e) => {
@@ -164,9 +192,9 @@ export const Header: React.FC<HeaderProps> = ({
               cursor: 'pointer'
             }}
           >
-            <option value="guest">Guest User</option>
-            <option value="customer">Customer</option>
-            <option value="admin">Administrator</option>
+            <option value="guest">{t('guest')}</option>
+            <option value="customer">{t('customer')}</option>
+            <option value="admin">{t('admin')}</option>
           </select>
         </div>
 
@@ -190,7 +218,7 @@ export const Header: React.FC<HeaderProps> = ({
               transition: 'var(--transition-fast)'
             }}
           >
-            <span>Cart</span>
+            <span>{t('cart')}</span>
             <span style={{
               background: 'var(--color-primary)',
               color: '#FFF',

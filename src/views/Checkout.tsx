@@ -19,6 +19,7 @@ interface CheckoutProps {
   clearCart: () => void;
   activeRole: string;
   setRole: (role: any) => void;
+  t: (key: string) => string;
 }
 
 export const Checkout: React.FC<CheckoutProps> = ({
@@ -26,7 +27,8 @@ export const Checkout: React.FC<CheckoutProps> = ({
   cart,
   clearCart,
   activeRole,
-  setRole
+  setRole,
+  t
 }) => {
   const [shippingName, setShippingName] = useState<string>('Alex Rivers');
   const [shippingEmail, setShippingEmail] = useState<string>('alex@designstudio.io');
@@ -44,12 +46,12 @@ export const Checkout: React.FC<CheckoutProps> = ({
       <div className="section" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
         <div className="glass-panel" style={{ padding: '48px', maxWidth: '400px', textAlign: 'center' }}>
           <div style={{ fontSize: '3rem', color: 'var(--color-text-muted)', marginBottom: '24px' }}>🛒</div>
-          <h2 className="serif-font" style={{ fontSize: '1.8rem', marginBottom: '16px' }}>Your Cart is Empty</h2>
+          <h2 className="serif-font" style={{ fontSize: '1.8rem', marginBottom: '16px' }}>{t('cart')}</h2>
           <p style={{ color: 'var(--color-text-secondary)', marginBottom: '32px' }}>
-            Choose a custom template, design from scratch, or configure an artwork upload to proceed.
+            {t('navHome') === 'الرئيسية' ? 'سلتك فارغة حالياً. يرجى اختيار منتج من الخدمات وتهيئة مواصفاته.' : 'Your cart is currently empty. Choose a product and configure its specs.'}
           </p>
           <button className="btn btn-primary" onClick={() => setView('services')}>
-            Browse Printing Services
+            {t('navServices')}
           </button>
         </div>
       </div>
@@ -60,9 +62,8 @@ export const Checkout: React.FC<CheckoutProps> = ({
     e.preventDefault();
     if (!cart) return;
 
-    // Check credentials
     if (!shippingName || !shippingEmail || !shippingAddress) {
-      alert('Please fill out all required shipping and contact information.');
+      alert(t('navHome') === 'الرئيسية' ? 'يرجى تعبئة كافة الحقول المطلوبة.' : 'Please fill out all required shipping and contact information.');
       return;
     }
 
@@ -101,12 +102,12 @@ export const Checkout: React.FC<CheckoutProps> = ({
       <div className="section" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
         <div className="glass-panel" style={{ padding: '48px', maxWidth: '500px', textAlign: 'center' }}>
           <div style={{ fontSize: '3.5rem', color: 'var(--color-secondary)', marginBottom: '24px' }}>✓</div>
-          <h2 className="serif-font" style={{ fontSize: '2.2rem', marginBottom: '16px' }}>Payment Approved</h2>
+          <h2 className="serif-font" style={{ fontSize: '2.2rem', marginBottom: '16px' }}>{t('paymentApproved')}</h2>
           <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.95rem', marginBottom: '12px' }}>
-            Thank you for your order! Your invoice reference is <strong>#{confirmedOrderId}</strong>.
+            {t('paymentApprovedDesc')} <strong>#{confirmedOrderId}</strong>.
           </p>
           <p style={{ color: 'var(--color-accent)', fontSize: '0.85rem', fontWeight: 600, background: 'rgba(255, 45, 85, 0.1)', padding: '8px', borderRadius: '4px', marginBottom: '32px' }}>
-            ⚠️ Preflight Review: Our admin design team is evaluating your canvas layout & margins before printing release.
+            {t('reviewNotice')}
           </p>
           <div style={{ display: 'flex', gap: '16px' }}>
             <button 
@@ -117,7 +118,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
                 setView('customer-dashboard');
               }}
             >
-              Track Order Progress
+              {t('trackOrderProgress')}
             </button>
             <button 
               className="btn btn-secondary"
@@ -126,7 +127,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
                 setView('home');
               }}
             >
-              Back to Home
+              {t('backHome')}
             </button>
           </div>
         </div>
@@ -138,7 +139,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
     <div className="section" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '60px', alignItems: 'start' }}>
       {/* Shipping details and Cart items column */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-        <h1 className="serif-font" style={{ fontSize: '2.5rem' }}>Checkout Summary</h1>
+        <h1 className="serif-font" style={{ fontSize: '2.5rem' }}>{t('checkoutSummary')}</h1>
 
         {/* Selected Product Specifications card */}
         {cart && (
@@ -163,11 +164,11 @@ export const Checkout: React.FC<CheckoutProps> = ({
                 display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', fontSize: '0.85rem',
                 color: 'var(--color-text-secondary)', marginTop: '12px', borderTop: '1px solid var(--border-color)', paddingTop: '12px'
               }}>
-                <div>Color: <span style={{ color: '#FFF', fontWeight: 600 }}>{cart.color}</span></div>
-                <div>Quantity: <span style={{ color: '#FFF', fontWeight: 600 }}>{cart.quantity} units</span></div>
-                <div>Material: <span style={{ color: '#FFF', fontWeight: 600 }}>{cart.material}</span></div>
-                <div>Finish: <span style={{ color: '#FFF', fontWeight: 600 }}>{cart.finish}</span></div>
-                <div>Artwork: <span style={{ color: 'var(--color-secondary)', fontWeight: 600 }}>{cart.artworkType === 'studio' ? 'Designed in Studio' : 'Uploaded file'}</span></div>
+                <div>{t('color')} <span style={{ color: '#FFF', fontWeight: 600 }}>{cart.color}</span></div>
+                <div>{t('quantity')}: <span style={{ color: '#FFF', fontWeight: 600 }}>{cart.quantity}</span></div>
+                <div>{t('material')} <span style={{ color: '#FFF', fontWeight: 600 }}>{cart.material}</span></div>
+                <div>{t('finish')} <span style={{ color: '#FFF', fontWeight: 600 }}>{cart.finish}</span></div>
+                <div>{t('artwork')} <span style={{ color: 'var(--color-secondary)', fontWeight: 600 }}>{cart.artworkType === 'studio' ? 'Designed in Studio' : 'Uploaded file'}</span></div>
               </div>
             </div>
           </div>
@@ -175,10 +176,10 @@ export const Checkout: React.FC<CheckoutProps> = ({
 
         {/* Shipping details Form */}
         <div className="glass-panel" style={{ padding: '32px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <h3 className="serif-font" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>Shipping Address</h3>
+          <h3 className="serif-font" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>{t('shippingAddressTitle')}</h3>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>Contact Name</label>
+            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>{t('contactName')}</label>
             <input 
               type="text" 
               value={shippingName} 
@@ -191,7 +192,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>Contact Email</label>
+            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>{t('contactEmail')}</label>
             <input 
               type="email" 
               value={shippingEmail} 
@@ -204,7 +205,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>Delivery Destination Address</label>
+            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>{t('destinationAddress')}</label>
             <input 
               type="text" 
               value={shippingAddress} 
@@ -222,7 +223,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
       {cart && (
         <form onSubmit={handlePay} className="glass-panel" style={{ padding: '40px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <h3 className="serif-font" style={{ fontSize: '1.6rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '16px' }}>
-            Secure Checkout
+            {t('secureCheckout')}
           </h3>
 
           {/* Credit Card Mockup Panel */}
@@ -257,16 +258,16 @@ export const Checkout: React.FC<CheckoutProps> = ({
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
               <div>
-                <div style={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Cardholder</div>
+                <div style={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>{t('navHome') === 'الرئيسية' ? 'صاحب البطاقة' : 'Cardholder'}</div>
                 <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>{shippingName || 'Cardholder Name'}</div>
               </div>
               <div style={{ display: 'flex', gap: '16px' }}>
                 <div>
-                  <div style={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Expires</div>
+                  <div style={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>{t('navHome') === 'الرئيسية' ? 'الانتهاء' : 'Expires'}</div>
                   <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>{cardExpiry || 'MM/YY'}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>CVV</div>
+                  <div style={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>{t('cvv')}</div>
                   <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>{cardCvv || '•••'}</div>
                 </div>
               </div>
@@ -275,7 +276,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
 
           {/* Real Input form fields */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>Card Number</label>
+            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>{t('cardNumber')}</label>
             <input 
               type="text" 
               value={cardNumber} 
@@ -290,7 +291,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>Expiration Date</label>
+              <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>{t('expirationDate')}</label>
               <input 
                 type="text" 
                 value={cardExpiry} 
@@ -303,7 +304,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
               />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>Security CVV</label>
+              <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)' }}>{t('cvv')}</label>
               <input 
                 type="text" 
                 value={cardCvv} 
@@ -320,21 +321,21 @@ export const Checkout: React.FC<CheckoutProps> = ({
           {/* Pricing summary */}
           <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '20px', marginTop: '10px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>
-              <span>Subtotal:</span>
+              <span>{t('subtotal')}</span>
               <span>${cart.price.toLocaleString()}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>
-              <span>Shipping & Preflight Review:</span>
-              <span style={{ color: 'var(--color-secondary)' }}>FREE</span>
+              <span>{t('navHome') === 'الرئيسية' ? 'الشحن والمراجعة الفنية' : 'Shipping & Preflight Review'}:</span>
+              <span style={{ color: 'var(--color-secondary)' }}>{t('free')}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-color)', paddingTop: '12px', fontSize: '1.2rem', fontWeight: 700 }}>
-              <span>Total Charge:</span>
+              <span>{t('finalCost')}:</span>
               <span style={{ color: 'var(--color-secondary)' }}>${cart.price.toLocaleString()}</span>
             </div>
           </div>
 
           <button type="submit" className="btn btn-primary" style={{ marginTop: '12px' }}>
-            Simulate Payment of ${cart.price.toLocaleString()}
+            {t('simulatePayment')} ${cart.price.toLocaleString()}
           </button>
         </form>
       )}

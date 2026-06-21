@@ -1,5 +1,5 @@
-import type { Order, DesignRequest, PortfolioProject, CanvasState, ProductType } from './types';
-import { portfolioProjects } from './mockData';
+import type { Order, DesignRequest, PortfolioProject, CanvasState, ProductType, Product } from './types';
+import { portfolioProjects, products as initialProducts } from './mockData';
 
 export interface SavedDesign {
   id: string;
@@ -15,6 +15,7 @@ const STORAGE_KEYS = {
   ORDERS: 'show_arsta_orders',
   REQUESTS: 'show_arsta_requests',
   PORTFOLIO: 'show_arsta_portfolio',
+  CATALOG: 'show_arsta_catalog',
 };
 
 // Seed initial dashboard orders for premium feel if empty
@@ -56,6 +57,33 @@ const seedOrders = (userId: string): Order[] => {
 };
 
 export const db = {
+  // Products Catalog (Admin editable)
+  getProducts: (): Product[] => {
+    const data = localStorage.getItem(STORAGE_KEYS.CATALOG);
+    if (!data) {
+      localStorage.setItem(STORAGE_KEYS.CATALOG, JSON.stringify(initialProducts));
+      return initialProducts;
+    }
+    return JSON.parse(data);
+  },
+
+  saveProduct: (product: Product) => {
+    const list = db.getProducts();
+    const index = list.findIndex(p => p.id === product.id);
+    if (index >= 0) {
+      list[index] = product;
+    } else {
+      list.push(product);
+    }
+    localStorage.setItem(STORAGE_KEYS.CATALOG, JSON.stringify(list));
+  },
+
+  deleteProduct: (id: string) => {
+    const list = db.getProducts();
+    const updated = list.filter(p => p.id !== id);
+    localStorage.setItem(STORAGE_KEYS.CATALOG, JSON.stringify(updated));
+  },
+
   // Saved Designs
   getSavedDesigns: (): SavedDesign[] => {
     const data = localStorage.getItem(STORAGE_KEYS.DESIGNS);
@@ -115,6 +143,15 @@ export const db = {
         if (!list[index].revisions) list[index].revisions = [];
         list[index].revisions?.push(revisionNote);
       }
+      localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(list));
+    }
+  },
+
+  updateOrderDetails: (orderId: string, details: Partial<Order>) => {
+    const list = db.getAllOrders();
+    const index = list.findIndex(o => o.id === orderId);
+    if (index >= 0) {
+      list[index] = { ...list[index], ...details };
       localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(list));
     }
   },

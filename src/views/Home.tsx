@@ -4,50 +4,62 @@ import { BeforeAfterSlider } from '../components/BeforeAfterSlider';
 interface HomeProps {
   setView: (view: string) => void;
   setSelectedProductType: (type: any) => void;
+  t: (key: string) => string;
 }
 
-export const Home: React.FC<HomeProps> = ({ setView, setSelectedProductType }) => {
+export const Home: React.FC<HomeProps> = ({ setView, setSelectedProductType, t }) => {
   const categories = [
     {
       id: 'tshirt',
-      name: 'T-Shirts & Apparel',
-      desc: 'Heavyweight organic cotton, boxy fits, and puff printing options.',
+      nameAr: 'تي شيرت وملابس مخصصة',
+      nameEn: 'T-Shirts & Apparel',
+      descAr: 'قطن عضوي ثقيل الوزن بقصة واسعة وخيارات طباعة بارزة.',
+      descEn: 'Heavyweight organic cotton, boxy fits, and puff printing options.',
       icon: '👕',
-      tag: 'From $24.99'
+      tag: 'prod-tshirt'
     },
     {
       id: 'mug',
-      name: 'Ceramic Mugs',
-      desc: 'Premium matte glaze craft coffee mugs built to last.',
+      nameAr: 'أكواب سيراميك فاخرة',
+      nameEn: 'Ceramic Mugs',
+      descAr: 'أكواب قهوة مصنوعة يدوياً من السيراميك المطلي المقاوم للحرارة.',
+      descEn: 'Premium matte glaze craft coffee mugs built to last.',
       icon: '☕',
-      tag: 'From $12.99'
+      tag: 'prod-mug'
     },
     {
       id: 'sticker',
-      name: 'Die-Cut Stickers',
-      desc: 'Holographic, glossy, and matte heavy-duty vinyl stickers.',
+      nameAr: 'ملصقات فينيل مقصوصة',
+      nameEn: 'Die-Cut Stickers',
+      descAr: 'ملصقات فينيل متينة ومقاومة للماء والعوامل الجوية بطبقة لامعة أو ثلاثية الأبعاد.',
+      descEn: 'Holographic, glossy, and matte heavy-duty vinyl stickers.',
       icon: '✨',
-      tag: 'From $1.49'
+      tag: 'prod-sticker'
     },
     {
       id: 'business_card',
-      name: 'Business Cards',
-      desc: 'Cotton linen textured cards with blind debossing and foil stamping.',
+      nameAr: 'بطاقات عمل فاخرة',
+      nameEn: 'Business Cards',
+      descAr: 'بطاقات من الورق القطني والكتان الفاخر مع حفر بارز وختم رقائق ذهبية ونحاسية.',
+      descEn: 'Cotton linen textured cards with blind debossing and foil stamping.',
       icon: '📇',
-      tag: 'From $0.25'
+      tag: 'prod-business-card'
     },
     {
       id: 'packaging',
-      name: 'Eco Cardboard Boxes',
-      desc: 'Custom-fit kraft paper shipping and display boxes.',
+      nameAr: 'صناديق كرتون صديقة للبيئة',
+      nameEn: 'Eco Cardboard Boxes',
+      descAr: 'صناديق شحن وعرض كرتونية مخصصة بأبعاد وطباعة بيئية ملائمة.',
+      descEn: 'Custom-fit kraft paper shipping and display boxes.',
       icon: '📦',
-      tag: 'From $2.99'
+      tag: 'prod-packaging'
     }
   ];
 
   const handleCategoryClick = (id: string, workflow: 'design' | 'upload') => {
     setSelectedProductType(id);
     if (workflow === 'design') {
+      // Studio is suspended temporarily
       setView('studio');
     } else {
       setView('services');
@@ -58,28 +70,37 @@ export const Home: React.FC<HomeProps> = ({ setView, setSelectedProductType }) =
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
       {/* Hero Section */}
       <section className="hero-section">
-        <div className="hero-subtitle">Premium Custom Printing</div>
-        <h1 className="hero-title serif-font">
-          Design. Print. <span className="text-gradient">Deliver.</span>
-        </h1>
-        <p className="hero-desc">
-          Create high-fidelity print designs on our intuitive web canvas or hire our world-class designers to bring your vision to life.
-        </p>
+        <div className="hero-subtitle">{t('expressShipping')}</div>
+        <h1 className="hero-title serif-font" dangerouslySetInnerHTML={{ __html: t('heroTitle') }} />
+        <p className="hero-desc">{t('heroDesc')}</p>
+        
+        {/* Studio Offline Warn Label */}
+        <div style={{
+          background: 'rgba(255, 45, 85, 0.12)',
+          border: '1.5px dashed rgba(255, 45, 85, 0.4)',
+          borderRadius: '8px',
+          padding: '12px 24px',
+          marginBottom: '32px',
+          fontSize: '0.85rem',
+          maxWidth: '650px',
+          lineHeight: '1.6',
+          color: '#FFF'
+        }}>
+          📢 <strong>{t('studioOfflineTitle')}:</strong> {t('studioOfflineDesc')}
+        </div>
+
         <div className="hero-ctas">
           <button 
             className="btn btn-primary" 
-            onClick={() => {
-              setSelectedProductType('tshirt');
-              setView('studio');
-            }}
+            onClick={() => setView('services')}
           >
-            Start Designing ✦
+            {t('navServices')} ✦
           </button>
           <button 
             className="btn btn-secondary" 
             onClick={() => setView('request-design')}
           >
-            Request Custom Design
+            {t('requestDesignCTA')}
           </button>
         </div>
       </section>
@@ -101,16 +122,16 @@ export const Home: React.FC<HomeProps> = ({ setView, setSelectedProductType }) =
           textAlign: 'center'
         }}>
           <div>
-            <h4 style={{ color: 'var(--color-secondary)' }}>⚡ Express Shipping</h4>
-            <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>Production + delivery in 48-72h</p>
+            <h4 style={{ color: 'var(--color-secondary)' }}>{t('expressShipping')}</h4>
+            <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>{t('expressShippingDesc')}</p>
           </div>
           <div>
-            <h4 style={{ color: 'var(--color-secondary)' }}>🛡️ Premium Print Assurance</h4>
-            <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>Every file reviewed by printing experts</p>
+            <h4 style={{ color: 'var(--color-secondary)' }}>{t('printAssurance')}</h4>
+            <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>{t('printAssuranceDesc')}</p>
           </div>
           <div>
-            <h4 style={{ color: 'var(--color-secondary)' }}>🌱 Carbon-Neutral Stock</h4>
-            <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>100% sustainable paper and cotton</p>
+            <h4 style={{ color: 'var(--color-secondary)' }}>{t('carbonNeutral')}</h4>
+            <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>{t('carbonNeutralDesc')}</p>
           </div>
         </div>
       </section>
@@ -118,9 +139,9 @@ export const Home: React.FC<HomeProps> = ({ setView, setSelectedProductType }) =
       {/* Services Categories */}
       <section className="section">
         <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-          <h2 className="serif-font" style={{ fontSize: '2.5rem', marginBottom: '16px' }}>Explore Print Services</h2>
+          <h2 className="serif-font" style={{ fontSize: '2.5rem', marginBottom: '16px' }}>{t('exploreServices')}</h2>
           <p style={{ color: 'var(--color-text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
-            Choose from our premium selection of curated products and begin customizing immediately.
+            {t('exploreServicesDesc')}
           </p>
         </div>
 
@@ -132,25 +153,29 @@ export const Home: React.FC<HomeProps> = ({ setView, setSelectedProductType }) =
                   {cat.icon}
                 </div>
                 <div style={{ marginTop: '24px' }}>
-                  <span className="badge badge-printing" style={{ marginBottom: '8px' }}>{cat.tag}</span>
-                  <h3 className="serif-font" style={{ marginTop: '4px' }}>{cat.name}</h3>
-                  <p style={{ marginTop: '8px' }}>{cat.desc}</p>
+                  <h3 className="serif-font" style={{ marginTop: '4px' }}>
+                    {t('navHome') === 'الرئيسية' ? cat.nameAr : cat.nameEn}
+                  </h3>
+                  <p style={{ marginTop: '8px', fontSize: '0.85rem', lineHeight: '1.6' }}>
+                    {t('navHome') === 'الرئيسية' ? cat.descAr : cat.descEn}
+                  </p>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '8px', marginTop: '24px' }}>
                 <button 
-                  className="btn btn-primary" 
-                  style={{ flex: 1, padding: '8px 12px', fontSize: '0.8rem' }}
+                  className="btn btn-secondary" 
+                  style={{ flex: 1, padding: '8px 12px', fontSize: '0.8rem', borderStyle: 'dashed', color: 'var(--color-text-muted)', textDecoration: 'line-through' }}
                   onClick={() => handleCategoryClick(cat.id, 'design')}
+                  title={t('studioOfflineTitle')}
                 >
-                  Design
+                  {t('designOnline')}
                 </button>
                 <button 
-                  className="btn btn-secondary" 
+                  className="btn btn-primary" 
                   style={{ flex: 1, padding: '8px 12px', fontSize: '0.8rem' }}
                   onClick={() => handleCategoryClick(cat.id, 'upload')}
                 >
-                  Specs
+                  {t('detailsAction')}
                 </button>
               </div>
             </div>
@@ -168,35 +193,31 @@ export const Home: React.FC<HomeProps> = ({ setView, setSelectedProductType }) =
             alignItems: 'center' 
           }}>
             <div>
-              <span className="badge badge-indesign" style={{ marginBottom: '16px' }}>Featured Case Study</span>
+              <span className="badge badge-indesign" style={{ marginBottom: '16px' }}>{t('featuredCaseStudy')}</span>
               <h2 className="serif-font" style={{ fontSize: '3rem', marginBottom: '24px', lineHeight: 1.1 }}>
-                Zenith Specialty Coffee Roasters
+                {t('zenithTitle')}
               </h2>
-              <p style={{ color: 'var(--color-text-secondary)', marginBottom: '20px' }}>
-                Zenith needed corporate packaging that felt as clean and pure as their single-origin coffee. We built a visual identity relying on high-density copper hot stamping on natural brown kraft stock.
+              <p style={{ color: 'var(--color-text-secondary)', marginBottom: '20px', lineHeight: '1.8' }}>
+                {t('zenithDesc')}
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
                 <div style={{ display: 'flex', gap: '12px' }}>
                   <span style={{ color: 'var(--color-secondary)' }}>✓</span>
                   <div>
-                    <strong>Interactive Slide Preview:</strong> Drag the slider to compare client sketch briefs with finalized premium physical items.
-                  </div>
-                </div>
-                <div style={{ display: 'flex', gap: '12px' }}>
-                  <span style={{ color: 'var(--color-secondary)' }}>✓</span>
-                  <div>
-                    <strong>Precision Layouts:</strong> Realized using select eco-kraft structures.
+                    {t('sliderHint')}
                   </div>
                 </div>
               </div>
               <button className="btn btn-primary" onClick={() => setView('portfolio')}>
-                View Case Studies Library
+                {t('viewPortfolio')}
               </button>
             </div>
 
             {/* Slider container mapping simulated SVG representations */}
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <BeforeAfterSlider 
+                titleBefore={t('navHome') === 'الرئيسية' ? 'مسودة فكرة العميل' : 'Client Brief Sketch'}
+                titleAfter={t('navHome') === 'الرئيسية' ? 'نموذج مطبوع حقيقي فاخر' : 'Production-Ready Mockup'}
                 beforeNode={
                   <div style={{ 
                     width: '100%', 
@@ -211,11 +232,10 @@ export const Home: React.FC<HomeProps> = ({ setView, setSelectedProductType }) =
                     textAlign: 'center',
                     fontFamily: 'Courier New'
                   }}>
-                    <h3>[CLIENT SKETCH CONCEPT]</h3>
+                    <h3>{t('navHome') === 'الرئيسية' ? '[مسودة تصميم العميل]' : '[CLIENT SKETCH CONCEPT]'}</h3>
                     <div style={{ border: '2px dashed #3E2723', width: '200px', height: '140px', margin: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       ZENITH BAG DESIGN V1
                     </div>
-                    <p style={{ fontSize: '0.8rem' }}>"Please use organic materials and dark lettering."</p>
                   </div>
                 }
                 afterNode={
@@ -246,18 +266,6 @@ export const Home: React.FC<HomeProps> = ({ setView, setSelectedProductType }) =
                     <div style={{ fontSize: '0.75rem', color: '#D4AF37', letterSpacing: '0.2em', marginTop: '4px' }}>
                       COFFEE ROASTERS
                     </div>
-                    <div style={{
-                      marginTop: '40px',
-                      border: '1px solid rgba(212, 175, 55, 0.4)',
-                      padding: '12px 24px',
-                      borderRadius: '4px',
-                      fontSize: '0.8rem',
-                      color: '#EAE6DF',
-                      background: 'rgba(0,0,0,0.5)',
-                      fontFamily: 'monospace'
-                    }}>
-                      NATURAL CRAFT BAG
-                    </div>
                   </div>
                 }
               />
@@ -269,9 +277,9 @@ export const Home: React.FC<HomeProps> = ({ setView, setSelectedProductType }) =
       {/* How It Works section */}
       <section className="section" style={{ position: 'relative' }}>
         <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-          <h2 className="serif-font" style={{ fontSize: '2.5rem', marginBottom: '16px' }}>How It Works</h2>
+          <h2 className="serif-font" style={{ fontSize: '2.5rem', marginBottom: '16px' }}>{t('howItWorks')}</h2>
           <p style={{ color: 'var(--color-text-secondary)', maxWidth: '500px', margin: '0 auto' }}>
-            A simplified, secure workflow from digital idea to physical delivery.
+            {t('howItWorksDesc')}
           </p>
         </div>
 
@@ -282,31 +290,23 @@ export const Home: React.FC<HomeProps> = ({ setView, setSelectedProductType }) =
         }}>
           <div className="glass-panel" style={{ padding: '32px' }}>
             <div style={{ fontSize: '2rem', marginBottom: '16px' }}>❶</div>
-            <h4 style={{ marginBottom: '8px' }}>Select & Customize</h4>
-            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>
-              Choose a product, write ideas or select custom templates in the online studio, or upload your logo files.
-            </p>
+            <h4 style={{ marginBottom: '8px' }}>{t('step1Title')}</h4>
+            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>{t('step1Desc')}</p>
           </div>
           <div className="glass-panel" style={{ padding: '32px' }}>
             <div style={{ fontSize: '2rem', marginBottom: '16px' }}>❷</div>
-            <h4 style={{ marginBottom: '8px' }}>Instant Estimate</h4>
-            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>
-              Configure finishes, volume, and material grades. Receive precise, real-time cost feedback instantly.
-            </p>
+            <h4 style={{ marginBottom: '8px' }}>{t('step2Title')}</h4>
+            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>{t('step2Desc')}</p>
           </div>
           <div className="glass-panel" style={{ padding: '32px' }}>
             <div style={{ fontSize: '2rem', marginBottom: '16px' }}>❸</div>
-            <h4 style={{ marginBottom: '8px' }}>Expert Preflight Review</h4>
-            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>
-              Before printing, our design team tests your file layout, margins, and DPI. No failures allowed.
-            </p>
+            <h4 style={{ marginBottom: '8px' }}>{t('step3Title')}</h4>
+            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>{t('step3Desc')}</p>
           </div>
           <div className="glass-panel" style={{ padding: '32px' }}>
             <div style={{ fontSize: '2rem', marginBottom: '16px' }}>❹</div>
-            <h4 style={{ marginBottom: '8px' }}>Premium Delivery</h4>
-            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>
-              We print using industry-leading machinery and ship directly to your storefront. Track live on your dashboard.
-            </p>
+            <h4 style={{ marginBottom: '8px' }}>{t('step4Title')}</h4>
+            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>{t('step4Desc')}</p>
           </div>
         </div>
       </section>
@@ -315,7 +315,7 @@ export const Home: React.FC<HomeProps> = ({ setView, setSelectedProductType }) =
       <section style={{ background: '#0F0F15', padding: '100px 24px' }}>
         <div className="section" style={{ padding: 0 }}>
           <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-            <h2 className="serif-font" style={{ fontSize: '2.5rem', marginBottom: '16px' }}>Loved by Leading Brands</h2>
+            <h2 className="serif-font" style={{ fontSize: '2.5rem', marginBottom: '16px' }}>{t('testimonialsTitle')}</h2>
           </div>
           <div style={{ 
             display: 'grid', 
@@ -324,19 +324,19 @@ export const Home: React.FC<HomeProps> = ({ setView, setSelectedProductType }) =
           }}>
             <div className="glass-panel" style={{ padding: '32px' }}>
               <div style={{ display: 'flex', color: '#D4AF37', gap: '4px', marginBottom: '12px' }}>★★★★★</div>
-              <p style={{ fontStyle: 'italic', marginBottom: '20px', color: 'var(--color-text-secondary)' }}>
-                "We ordered 500 custom linen cards for our executive team. The blind debossing was pristine and the thick layered edge is a major talking point."
+              <p style={{ fontStyle: 'italic', marginBottom: '20px', color: 'var(--color-text-secondary)', fontSize: '0.9rem', lineHeight: '1.8' }}>
+                {t('testimonial1Text')}
               </p>
-              <h5 style={{ fontWeight: 600 }}>Marcus Chen</h5>
-              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Co-Founder, Apex Logistics</span>
+              <h5 style={{ fontWeight: 600 }}>{t('testimonial1Author')}</h5>
+              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{t('testimonial1Role')}</span>
             </div>
             <div className="glass-panel" style={{ padding: '32px' }}>
               <div style={{ display: 'flex', color: '#D4AF37', gap: '4px', marginBottom: '12px' }}>★★★★★</div>
-              <p style={{ fontStyle: 'italic', marginBottom: '20px', color: 'var(--color-text-secondary)' }}>
-                "The web studio editor was super smooth. I was warning-flagged for a low-res logo asset, which prevented a printing mistake. Excellent attention to quality."
+              <p style={{ fontStyle: 'italic', marginBottom: '20px', color: 'var(--color-text-secondary)', fontSize: '0.9rem', lineHeight: '1.8' }}>
+                {t('testimonial2Text')}
               </p>
-              <h5 style={{ fontWeight: 600 }}>Elena Rostova</h5>
-              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Marketing Lead, NovaTech DevConf</span>
+              <h5 style={{ fontWeight: 600 }}>{t('testimonial2Author')}</h5>
+              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{t('testimonial2Role')}</span>
             </div>
           </div>
         </div>
