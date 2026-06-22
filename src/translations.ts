@@ -18,6 +18,7 @@ export const translations = {
     items: 'عناصر',
 
     // Global
+    currency: 'ج.م',
     studioOfflineTitle: 'الاستوديو معطل مؤقتاً',
     studioOfflineDesc: 'نعمل حالياً على تحديث استوديو التصميم الذاتي لتزويدكم بميزات أفضل. يرجى استخدام نموذج "طلب تصميم احترافي" أو رفع تصاميمكم الجاهزة مباشرة عبر صفحة الخدمات.',
     close: 'إغلاق',
@@ -212,7 +213,7 @@ export const translations = {
     productNameEn: 'اسم المنتج (بالإنجليزية)',
     productDescAr: 'وصف المنتج (بالعربية)',
     productDescEn: 'وصف المنتج (بالإنجليزية)',
-    productBasePrice: 'السعر الأساسي ($)',
+    productBasePrice: 'السعر الأساسي (ج.م)',
     productColorsComma: 'الألوان المتاحة (أكواد سداسية مفصولة بفواصل، مثل: #FFF,#000)',
     productMaterialsAr: 'المواد المتاحة (الاسم بالعربية:معامل التكلفة، مفصولة بفواصل، مثل: ورق قطني:1.2)',
     productFinishesAr: 'التشطيبات المتاحة (الاسم بالعربية:تكلفة إضافية، مفصولة بفواصل، مثل: ختم ذهبي:3.5)',
@@ -236,6 +237,7 @@ export const translations = {
     items: 'items',
 
     // Global
+    currency: 'EGP',
     studioOfflineTitle: 'Studio Editor Offline',
     studioOfflineDesc: 'We are currently upgrading the self-service design editor for an improved workflow. Please request a professional design brief or upload your ready-to-print artwork directly.',
     close: 'Close',
@@ -430,7 +432,7 @@ export const translations = {
     productNameEn: 'Product Name (English)',
     productDescAr: 'Product Description (Arabic)',
     productDescEn: 'Product Description (English)',
-    productBasePrice: 'Base Price ($)',
+    productBasePrice: 'Base Price (EGP)',
     productColorsComma: 'Available Colors (Comma separated hex codes, e.g. #FFF,#000)',
     productMaterialsAr: 'Materials (Name:multiplier comma separated, e.g. Cotton Linen:1.2)',
     productFinishesAr: 'Finishes (Name:addedCost comma separated, e.g. Foil Emboss:0.6)',

@@ -329,7 +329,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ t, lang }) => {
                       <td style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>
                         {order.material} / {order.finish}
                       </td>
-                      <td style={{ fontWeight: 600 }}>${order.price.toLocaleString()}</td>
+                      <td style={{ fontWeight: 600 }}>{order.price.toLocaleString()} {t('currency')}</td>
                       <td>
                         <span className={`badge badge-${order.status.replace('_', '')}`}>
                           {lang === 'ar' 
@@ -455,7 +455,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ t, lang }) => {
                           <tr key={prod.id}>
                             <td style={{ fontWeight: 600 }}>{localized.name}</td>
                             <td style={{ textTransform: 'capitalize' }}>{prod.type}</td>
-                            <td style={{ color: 'var(--color-secondary)', fontWeight: 'bold' }}>${prod.basePrice}</td>
+                            <td style={{ color: 'var(--color-secondary)', fontWeight: 'bold' }}>{prod.basePrice} {t('currency')}</td>
                             <td>
                               <span style={{ fontSize: '0.8rem' }}>
                                 {localized.materials.map(m => m.name).join(', ')}
@@ -808,7 +808,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ t, lang }) => {
                       <div><strong>{lang === 'ar' ? 'نوع التشطيب:' : 'Selected Finish:'}</strong> {selectedOrder.finish}</div>
                       <div><strong>{lang === 'ar' ? 'الكمية المطلوبة:' : 'Quantity Count:'}</strong> {selectedOrder.quantity}</div>
                       <div><strong>{lang === 'ar' ? 'اللون (Hex):' : 'Color hex:'}</strong> {selectedOrder.color}</div>
-                      <div><strong>{lang === 'ar' ? 'التكلفة الإجمالية:' : 'Total Cost:'}</strong> ${selectedOrder.price}</div>
+                      <div><strong>{lang === 'ar' ? 'التكلفة الإجمالية:' : 'Total Cost:'}</strong> {selectedOrder.price} {t('currency')}</div>
                       <div><strong>{lang === 'ar' ? 'نوع التصميم:' : 'Artwork Type:'}</strong> {selectedOrder.artworkType.toUpperCase()}</div>
                     </div>
 
@@ -896,7 +896,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ t, lang }) => {
                       />
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                      <label style={{ fontSize: '0.8rem', fontWeight: 600 }}>{lang === 'ar' ? 'السعر الكلي ($)' : 'Total Price ($)'}</label>
+                      <label style={{ fontSize: '0.8rem', fontWeight: 600 }}>{lang === 'ar' ? `السعر الكلي (${t('currency')})` : `Total Price (${t('currency')})`}</label>
                       <input 
                         type="number" 
                         step="0.01"

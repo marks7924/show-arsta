@@ -220,7 +220,7 @@ export const Services: React.FC<ServicesProps> = ({
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '16px' }}>
                     <h2 className="serif-font" style={{ fontSize: '2rem' }}>{product.name}</h2>
                     <span style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--color-secondary)' }}>
-                      {t('startingAt')} ${product.basePrice}
+                      {t('startingAt')} {product.basePrice} {t('currency')}
                     </span>
                   </div>
                   <p style={{ color: 'var(--color-text-secondary)', marginBottom: '32px', fontSize: '0.95rem' }}>{product.description}</p>
@@ -270,7 +270,7 @@ export const Services: React.FC<ServicesProps> = ({
                         }}
                       >
                         {product.finishes.map((fin, idx) => (
-                          <option key={fin.name} value={idx}>{fin.name} ({fin.addedCost === 0 ? 'Standard' : `+$${fin.addedCost}`})</option>
+                          <option key={fin.name} value={idx}>{fin.name} ({fin.addedCost === 0 ? 'Standard' : `+${fin.addedCost} ${t('currency')}`})</option>
                         ))}
                       </select>
                     </div>
@@ -354,10 +354,10 @@ export const Services: React.FC<ServicesProps> = ({
                     </div>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
                       <span style={{ fontSize: '2rem', fontWeight: 800, color: '#FFF' }}>
-                        ${totalPrice.toLocaleString()}
+                        {totalPrice.toLocaleString()} {t('currency')}
                       </span>
                       <span style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
-                        (${unitPrice} / {lang === 'ar' ? 'وحدة' : 'unit'})
+                        ({unitPrice} {t('currency')} / {lang === 'ar' ? 'وحدة' : 'unit'})
                       </span>
                     </div>
                   </div>

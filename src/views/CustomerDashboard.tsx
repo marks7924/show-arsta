@@ -145,7 +145,7 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
                       <td>{order.date}</td>
                       <td>{order.productName}</td>
                       <td>{order.quantity} units</td>
-                      <td style={{ fontWeight: 600 }}>${order.price.toLocaleString()}</td>
+                      <td style={{ fontWeight: 600 }}>{order.price.toLocaleString()} {t('currency')}</td>
                       <td>
                         <span className={`badge badge-${order.status.replace('_', '')}`}>
                           {order.status.replace('_', ' ')}
@@ -331,7 +331,7 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-color)', paddingTop: '10px', marginTop: '10px' }}>
                       <span style={{ fontWeight: 700 }}>{t('finalCost')}:</span>
-                      <strong style={{ color: 'var(--color-secondary)', fontSize: '1.25rem' }}>${selectedOrder.price.toLocaleString()}</strong>
+                      <strong style={{ color: 'var(--color-secondary)', fontSize: '1.25rem' }}>{selectedOrder.price.toLocaleString()} {t('currency')}</strong>
                     </div>
                   </div>
                 </div>

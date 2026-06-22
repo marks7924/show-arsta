@@ -157,7 +157,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
                 <h3 className="serif-font">{cart.productName}</h3>
-                <strong style={{ fontSize: '1.1rem', color: 'var(--color-secondary)' }}>${cart.price.toLocaleString()}</strong>
+                <strong style={{ fontSize: '1.1rem', color: 'var(--color-secondary)' }}>{cart.price.toLocaleString()} {t('currency')}</strong>
               </div>
               
               <div style={{
@@ -322,7 +322,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
           <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '20px', marginTop: '10px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>
               <span>{t('subtotal')}</span>
-              <span>${cart.price.toLocaleString()}</span>
+              <span>{cart.price.toLocaleString()} {t('currency')}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>
               <span>{t('navHome') === 'الرئيسية' ? 'الشحن والمراجعة الفنية' : 'Shipping & Preflight Review'}:</span>
@@ -330,12 +330,12 @@ export const Checkout: React.FC<CheckoutProps> = ({
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-color)', paddingTop: '12px', fontSize: '1.2rem', fontWeight: 700 }}>
               <span>{t('finalCost')}:</span>
-              <span style={{ color: 'var(--color-secondary)' }}>${cart.price.toLocaleString()}</span>
+              <span style={{ color: 'var(--color-secondary)' }}>{cart.price.toLocaleString()} {t('currency')}</span>
             </div>
           </div>
 
           <button type="submit" className="btn btn-primary" style={{ marginTop: '12px' }}>
-            {t('simulatePayment')} ${cart.price.toLocaleString()}
+            {t('simulatePayment')} {cart.price.toLocaleString()} {t('currency')}
           </button>
         </form>
       )}
