@@ -299,7 +299,7 @@ export const CustomerDashboard: React.FC<CustomerDashboardProps> = ({
               </div>
 
               {/* SPEC DETAILS & PROOF REVIEW RULE */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', borderTop: '1px solid var(--border-color)', paddingTop: '24px' }}>
+              <div className="dashboard-details-grid">
                 {/* Product Specifications */}
                 <div>
                   <h4 style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px' }}>

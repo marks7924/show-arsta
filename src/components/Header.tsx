@@ -23,19 +23,7 @@ export const Header: React.FC<HeaderProps> = ({
   t
 }) => {
   return (
-    <header className="glass-panel" style={{
-      position: 'sticky',
-      top: 0,
-      zIndex: 100,
-      borderRadius: 0,
-      borderTop: 'none',
-      borderLeft: 'none',
-      borderRight: 'none',
-      padding: '16px 24px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    }}>
+    <header className="app-header glass-panel">
       {/* Brand Logo */}
       <div 
         onClick={() => setView('home')} 
@@ -62,7 +50,7 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Navigation */}
-      <nav style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+      <nav className="header-nav">
         <span 
           onClick={() => setView('home')} 
           style={{ 
@@ -149,7 +137,7 @@ export const Header: React.FC<HeaderProps> = ({
       </nav>
 
       {/* Role Switcher & Language */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      <div className="header-actions">
         {/* Quick Language Toggle Link in Header */}
         <span 
           onClick={toggleLanguage}

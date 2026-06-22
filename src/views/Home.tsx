@@ -186,12 +186,7 @@ export const Home: React.FC<HomeProps> = ({ setView, setSelectedProductType, t }
       {/* Interactive Case Study Teaser */}
       <section style={{ background: '#0F0F15', padding: '100px 24px' }}>
         <div className="section" style={{ padding: 0 }}>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: '1fr 1fr', 
-            gap: '60px', 
-            alignItems: 'center' 
-          }}>
+          <div className="home-case-study">
             <div>
               <span className="badge badge-indesign" style={{ marginBottom: '16px' }}>{t('featuredCaseStudy')}</span>
               <h2 className="serif-font" style={{ fontSize: '3rem', marginBottom: '24px', lineHeight: 1.1 }}>

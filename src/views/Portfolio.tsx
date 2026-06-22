@@ -300,14 +300,7 @@ export const Portfolio: React.FC<PortfolioProps> = ({ setView, activeRole, t }) 
         {projects.map((project) => (
           <div 
             key={project.id} 
-            style={{ 
-              display: 'grid', 
-              gridTemplateColumns: '1fr 1.1fr', 
-              gap: '60px',
-              alignItems: 'start',
-              borderBottom: '1px solid var(--border-color)',
-              paddingBottom: '80px'
-            }}
+            className="portfolio-project-grid"
           >
             {/* Text details column */}
             <div>

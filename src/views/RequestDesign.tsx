@@ -108,7 +108,7 @@ export const RequestDesign: React.FC<RequestDesignProps> = ({
   }
 
   return (
-    <div className="section" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '60px', alignItems: 'start' }}>
+    <div className="section request-design-grid">
       {/* Description column */}
       <div style={{ padding: '20px 0' }}>
         <span className="badge badge-indesign" style={{ marginBottom: '16px' }}>{t('navRequestDesign')}</span>

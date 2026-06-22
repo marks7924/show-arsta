@@ -166,14 +166,7 @@ export const Services: React.FC<ServicesProps> = ({
           return (
             <div 
               key={product.id} 
-              className="glass-panel" 
-              style={{ 
-                display: 'grid', 
-                gridTemplateColumns: '400px 1fr', 
-                gap: '40px',
-                padding: '40px',
-                alignItems: 'start'
-              }}
+              className="glass-panel service-product-card"
             >
               {/* Left Column: Visual Mockup */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>

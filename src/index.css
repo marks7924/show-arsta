@@ -757,3 +757,128 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 0;
   }
 }
+
+/* Responsive Grid & Layout Classes for Mobile Friendliness */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-radius: 0;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-nav {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.service-product-card {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 40px;
+  padding: 40px;
+  align-items: start;
+}
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.request-design-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.home-case-study {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.portfolio-project-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 60px;
+  align-items: start;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 80px;
+}
+
+.dashboard-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 24px;
+}
+
+/* Tablet & Mobile Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .app-header {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    text-align: center;
+  }
+  
+  .header-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+  
+  .header-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .service-product-card {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px;
+  }
+}
+
+@media (max-width: 900px) {
+  .checkout-grid,
+  .request-design-grid,
+  .home-case-study,
+  .portfolio-project-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  
+  .portfolio-project-grid {
+    padding-bottom: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-details-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+

@@ -136,7 +136,7 @@ export const Checkout: React.FC<CheckoutProps> = ({
   }
 
   return (
-    <div className="section" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '60px', alignItems: 'start' }}>
+    <div className="section checkout-grid">
       {/* Shipping details and Cart items column */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
         <h1 className="serif-font" style={{ fontSize: '2.5rem' }}>{t('checkoutSummary')}</h1>

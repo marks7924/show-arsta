@@ -801,7 +801,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ t, lang }) => {
                 <>
                   {/* Static workflow display */}
                   <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', fontSize: '0.9rem' }}>
+                    <div className="dashboard-details-grid" style={{ fontSize: '0.9rem', borderTop: 'none', paddingTop: 0 }}>
                       <div><strong>{lang === 'ar' ? 'الاسم المستلم:' : 'Client Name:'}</strong> {selectedOrder.userName}</div>
                       <div><strong>{lang === 'ar' ? 'البريد للاتصال:' : 'Contact Email:'}</strong> {selectedOrder.userEmail}</div>
                       <div><strong>{lang === 'ar' ? 'الخامة المختارة:' : 'Selected Material:'}</strong> {selectedOrder.material}</div>
